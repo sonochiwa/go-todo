@@ -3,12 +3,11 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"github.com/joho/godotenv"
+	"go-todo/pkg/config"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -19,6 +18,7 @@ import (
 
 var coll *mongo.Collection
 var ctx = context.TODO()
+var conf = config.New()
 
 type todo struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty"`
@@ -28,12 +28,7 @@ type todo struct {
 }
 
 func init() {
-	// loads values from .env into the system
-	if err := godotenv.Load(); err != nil {
-		log.Print("No .env file found")
-	}
-
-	clientOptions := options.Client().ApplyURI(os.Getenv("MONGODB_URI"))
+	clientOptions := options.Client().ApplyURI(conf.MongoDbUri)
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
 		log.Fatal(err)
@@ -44,7 +39,7 @@ func init() {
 		log.Fatal(err)
 	}
 
-	coll = client.Database(os.Getenv("DB_NAME")).Collection(os.Getenv("COLLECTION_NAME"))
+	coll = client.Database(conf.DbName).Collection(conf.CollectionName)
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
@@ -111,5 +106,5 @@ func main() {
 	r.Mount("/todos", todoHandlers())
 
 	// TODO: add gracefully shutdown
-	http.ListenAndServe(os.Getenv("PORT"), r)
+	http.ListenAndServe(conf.Port, r)
 }
