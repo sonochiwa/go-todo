@@ -13,6 +13,12 @@ type Config struct {
 	Port           string
 }
 
+var Conf *Config
+
+func init() {
+	Conf = LoadConfig()
+}
+
 func getEnv(key string, defaultValue string) string {
 	if value, exists := os.LookupEnv(key); exists {
 		return value
@@ -21,7 +27,7 @@ func getEnv(key string, defaultValue string) string {
 	return defaultValue
 }
 
-func New() *Config {
+func LoadConfig() *Config {
 	if err := godotenv.Load(); err != nil {
 		log.Print("No .env file found")
 	}
