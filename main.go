@@ -11,12 +11,12 @@ import (
 
 func main() {
 	corsMiddleware := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"}, // Разрешенные источники
+		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "PATCH"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
 		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: true,
-		MaxAge:           300, // Максимальное время кэширования предопределенных ответов в секундах.
+		MaxAge:           300,
 	})
 
 	r := chi.NewRouter()
