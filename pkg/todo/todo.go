@@ -47,6 +47,16 @@ func getTodos(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(results)
 }
 
+func getTodoById(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	id := chi.URLParam(r, "todo_id")
+	idPrimitive, _ := primitive.ObjectIDFromHex(id)
+	var t Todo
+	coll.FindOne(context.TODO(), bson.D{{"_id", idPrimitive}}).Decode(&t)
+
+	json.NewEncoder(w).Encode(t)
+}
+
 func createTodo(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var t Todo
@@ -85,6 +95,7 @@ func Routes() http.Handler {
 	rg := chi.NewRouter()
 	rg.Group(func(r chi.Router) {
 		r.Get("/", getTodos)
+		r.Get("/{todo_id}", getTodoById)
 		r.Post("/", createTodo)
 		r.Put("/{todo_id}", updateTodo)
 		r.Delete("/{todo_id}", deleteTodo)

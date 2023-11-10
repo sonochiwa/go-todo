@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Todo App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="container mt-5" style="max-width: 800px;">
+    <h1 class="mb-4">Todo App</h1>
+
+    <form id="addTodoForm" class="input-group mb-3">
+        <input type="text" maxlength="30" class="form-control" id="todoTitle" placeholder="Todo Title" required>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <table class="table table-striped mt-4">
+        <tbody id="todoList">
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<script>
+    const apiUrl = "http://localhost:9000/todos";
+
+    const fetchTodos = async () => {
+        const response = await fetch(apiUrl);
+        const todos = await response.json();
+
+        const todoList = document.getElementById("todoList");
+        todoList.innerHTML = "";
+
+        todos.forEach((todo) => {
+            const listItem = document.createElement("tr");
+            listItem.innerHTML = `
+                    <td class="align-middle" style="width: 32px">
+                        <input class="form-check-input" type="checkbox" value="" id="checkbox-${todo.ID}" ${todo.Completed ? 'checked' : ''} onchange="toggleComplete('${todo.ID}', this.checked)">
+                    </td>
+                    <td class="align-middle" ${todo.Completed ? 'style="text-decoration: line-through;"' : ''}>${todo.Title}</td>
+                    <td class="text-end">
+                        <button type="button" class="btn btn-success me-2" onclick="updateTodo('${todo.ID}')">Edit</button>
+                        <button type="button" class="btn btn-danger" onclick="deleteTodo('${todo.ID}')">Delete</button>
+                    </td>
+                `;
+            todoList.appendChild(listItem);
+        });
+    };
+
+    const addTodo = async (event) => {
+        event.preventDefault();
+
+        const todoTitle = document.getElementById("todoTitle").value;
+
+        await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                Title: todoTitle,
+                Completed: false,
+            }),
+        });
+
+        document.getElementById("addTodoForm").reset();
+        await fetchTodos();
+    };
+
+    const updateTodo = async (todoId) => {
+        const currentTitle = await getCurrentData(todoId).then(res => res.Title);
+        const currentCompleted = await getCurrentData(todoId).then(res => res.Completed);
+        const newTitle = prompt("Enter new title:", currentTitle);
+        if (newTitle !== null) {
+            await fetch(`${apiUrl}/${todoId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    Title: newTitle,
+                    Completed: currentCompleted,
+                }),
+            });
+
+            await fetchTodos();
+        }
+    };
+
+    const getCurrentData = async (todoId) => {
+        const response = await fetch(`${apiUrl}/${todoId}`);
+        return await response.json();
+    };
+
+    const deleteTodo = async (todoId) => {
+        const confirmDelete = confirm("Are you sure you want to delete this todo?");
+        if (confirmDelete) {
+            await fetch(`${apiUrl}/${todoId}`, {
+                method: "DELETE",
+            });
+
+            await fetchTodos();
+        }
+    };
+
+    const toggleComplete = async (todoId, completed) => {
+        const currentTitle = await getCurrentData(todoId).then(res => res.Title);
+        await fetch(`${apiUrl}/${todoId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                Title: currentTitle,
+                Completed: completed,
+            }),
+        });
+
+        await fetchTodos();
+    };
+
+    fetchTodos();
+
+    document.getElementById("addTodoForm").addEventListener("submit", addTodo);
+</script>
+</body>
+</html>
