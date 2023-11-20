@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/go-chi/chi/v5"
-	"go-todo/pkg/config"
+	appConfig "go-todo/pkg/config"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -16,16 +16,17 @@ import (
 
 var coll *mongo.Collection
 var ctx = context.TODO()
+var config = appConfig.GetConfig()
 
 type Todo struct {
-	ID        primitive.ObjectID `bson:"_id,omitempty"`
-	Title     string             `bson:"title"`
-	Completed bool               `bson:"completed"`
 	CreatedAt time.Time          `bson:"createdAt"`
+	Title     string             `bson:"title"`
+	ID        primitive.ObjectID `bson:"_id,omitempty"`
+	Completed bool               `bson:"completed"`
 }
 
 func init() {
-	clientOptions := options.Client().ApplyURI(config.Conf.MongoDbUri)
+	clientOptions := options.Client().ApplyURI(config.MongoDbUri)
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
 		log.Fatal(err)
@@ -36,7 +37,7 @@ func init() {
 		log.Fatal(err)
 	}
 
-	coll = client.Database(config.Conf.DbName).Collection(config.Conf.CollectionName)
+	coll = client.Database(config.DbName).Collection(config.CollectionName)
 }
 
 func getTodos(w http.ResponseWriter, r *http.Request) {
