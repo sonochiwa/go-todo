@@ -15,10 +15,10 @@ type Config struct {
 }
 
 func init() {
-	loadMongo()
+	loadConfig()
 }
 
-func loadMongo() {
+func loadConfig() {
 	if err := godotenv.Load(); err != nil {
 		log.Print("No .env file found")
 	}
