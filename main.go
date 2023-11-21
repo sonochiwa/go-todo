@@ -23,7 +23,7 @@ func main() {
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
-	r.Use(cors.New(middlewares.InitCors()).Handler)
+	r.Use(cors.New(middlewares.GetCors()).Handler)
 	r.Mount("/todos", todo.Routes())
 
 	srv := &http.Server{
