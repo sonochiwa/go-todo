@@ -6,6 +6,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	appConfig "go-todo/pkg/config"
+	"go-todo/pkg/middlewares"
 	"go-todo/pkg/todo"
 	"log"
 	"net/http"
@@ -20,32 +21,23 @@ func main() {
 	ch := make(chan os.Signal)
 	signal.Notify(ch, os.Interrupt)
 
-	corsMiddleware := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"},
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "PATCH"},
-		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
-		ExposedHeaders:   []string{"Link"},
-		AllowCredentials: true,
-		MaxAge:           300,
-	})
-
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
-	r.Use(corsMiddleware.Handler)
+	r.Use(cors.New(middlewares.InitCors()).Handler)
 	r.Mount("/todos", todo.Routes())
 
 	srv := &http.Server{
-		Addr:         config.Port,
+		Addr:         config.Server.Host + ":" + config.Server.Port,
 		Handler:      r,
-		ReadTimeout:  60 * time.Second,
-		WriteTimeout: 60 * time.Second,
-		IdleTimeout:  60 * time.Second,
+		ReadTimeout:  time.Duration(config.Server.ReadTimeout) * time.Second,
+		WriteTimeout: time.Duration(config.Server.WriteTimeout) * time.Second,
+		IdleTimeout:  time.Duration(config.Server.IdleTimeout) * time.Second,
 	}
 
 	go func() {
-		log.Println("Listening on port", config.Port)
-		if err := http.ListenAndServe(config.Port, r); err != nil {
-			log.Printf("listen:%s\n", err)
+		log.Println("Already available on", "http://"+srv.Addr)
+		if err := srv.ListenAndServe(); err != nil {
+			log.Println(err)
 		}
 	}()
 
@@ -54,5 +46,5 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	srv.Shutdown(ctx)
 	defer cancel()
-	log.Println("Server gracefully stopped")
+	log.Println("Server was stopped")
 }

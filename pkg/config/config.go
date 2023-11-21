@@ -7,11 +7,23 @@ import (
 	"strconv"
 )
 
-type Config struct {
+type Server struct {
+	Host         string
+	Port         string
+	ReadTimeout  int
+	WriteTimeout int
+	IdleTimeout  int
+}
+
+type MongoDB struct {
 	MongoDbUri     string
 	DbName         string
 	CollectionName string
-	Port           string
+}
+
+type Config struct {
+	Server  Server
+	MongoDB MongoDB
 }
 
 func init() {
@@ -26,10 +38,18 @@ func loadConfig() {
 
 func GetConfig() *Config {
 	return &Config{
-		MongoDbUri:     getEnv("MONGODB_URI", ""),
-		DbName:         getEnv("DB_NAME", ""),
-		CollectionName: getEnv("COLLECTION_NAME", ""),
-		Port:           getEnv("PORT", ""),
+		Server{
+			Host:         getEnv("HOST", "0.0.0.0"),
+			Port:         getEnv("PORT", "9000"),
+			ReadTimeout:  getEnvAsInt("READ_TIMEOUT", 60),
+			WriteTimeout: getEnvAsInt("WRITE_TIMEOUT", 60),
+			IdleTimeout:  getEnvAsInt("IDLE_TIMEOUT", 60),
+		},
+		MongoDB{
+			MongoDbUri:     getEnv("MONGODB_URI", ""),
+			DbName:         getEnv("DB_NAME", ""),
+			CollectionName: getEnv("COLLECTION_NAME", ""),
+		},
 	}
 }
 

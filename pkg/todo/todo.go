@@ -26,7 +26,7 @@ type Todo struct {
 }
 
 func init() {
-	clientOptions := options.Client().ApplyURI(config.MongoDbUri)
+	clientOptions := options.Client().ApplyURI(config.MongoDB.MongoDbUri)
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
 		log.Fatal(err)
@@ -37,7 +37,7 @@ func init() {
 		log.Fatal(err)
 	}
 
-	coll = client.Database(config.DbName).Collection(config.CollectionName)
+	coll = client.Database(config.MongoDB.DbName).Collection(config.MongoDB.CollectionName)
 }
 
 func getTodos(w http.ResponseWriter, r *http.Request) {
