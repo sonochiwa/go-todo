@@ -1,21 +1,31 @@
 # Go Todo App
 
+<img src="examples/img.png" alt="go version" />
+
 This is a simple CRUD (Create, Read, Update, Delete) web application written in Go, using MongoDB as the database. The
 application exposes a RESTful API for managing todo items.
 
-## Prerequisites
+## 📄 Prerequisites
 
 - Docker installed on your machine.
 
-## Getting Started
+## ⚡️ Quick start
 
-1. Clone the repository:
-2. Install dependencies:
-3. Build and run the application:
+1. Clone open the repository:
 
-The application will be accessible at [localhost:port](http://localhost:port)
+```bash
+git clone https://github.com/sonochiwa/go-todo.git && cd go-todo
+```
 
-## API Endpoints
+2. Build and run the application:
+
+```bash
+docker compose build && docker compose up
+```
+
+The application will be accessible at [localhost:9000](http://localhost:9000)
+
+## 🛠 API Endpoints
 
 - **GET /todos**: Retrieve all todo items.
 - **GET /todos/{todo_id}**: Retrieve todo item by id.
@@ -23,6 +33,6 @@ The application will be accessible at [localhost:port](http://localhost:port)
 - **PUT /todos/{todo_id}**: Update a todo item.
 - **DELETE /todos/{todo_id}**: Delete a todo item.
 
-## License
+## ⚠️ License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

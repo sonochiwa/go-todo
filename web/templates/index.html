@@ -17,7 +17,7 @@
     <h1 class="mb-4">Todo App</h1>
 
     <form id="addTodoForm" class="input-group mb-3">
-        <input type="text" maxlength="30" class="form-control" id="todoTitle" placeholder="Todo Title" required>
+        <input type="text" maxlength="45" class="form-control" id="todoTitle" placeholder="Todo Title" required>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 
@@ -40,7 +40,7 @@
         const todoList = document.getElementById("todoList");
         todoList.innerHTML = "";
 
-        todos.reverse().forEach((todo) => {
+        todos.forEach((todo) => {
             const listItem = document.createElement("tr");
             listItem.innerHTML = `
                     <td class="align-middle" style="width: 32px">
