@@ -11,7 +11,7 @@ application exposes a RESTful API for managing todo items.
 
 ## ⚡️ Quick start
 
-1. Clone open the repository:
+1. Clone and open the repository:
 
 ```bash
 git clone https://github.com/sonochiwa/go-todo.git && cd go-todo -d
