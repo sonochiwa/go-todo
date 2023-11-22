@@ -14,13 +14,13 @@ application exposes a RESTful API for managing todo items.
 1. Clone and open the repository:
 
 ```bash
-git clone https://github.com/sonochiwa/go-todo.git && cd go-todo -d
+git clone https://github.com/sonochiwa/go-todo.git && cd go-todo 
 ```
 
 2. Build and run the application:
 
 ```bash
-docker compose build && docker compose up
+docker compose build && docker compose up -d
 ```
 
 The application will be accessible at [localhost:9000](http://localhost:9000)
