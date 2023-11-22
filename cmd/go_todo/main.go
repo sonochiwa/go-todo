@@ -5,9 +5,9 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
-	appConfig "go-todo/pkg/config"
-	"go-todo/pkg/middlewares"
-	"go-todo/pkg/todo"
+	"go-todo/api/handlers"
+	"go-todo/api/middlewares"
+	appConfig "go-todo/configs"
 	"log"
 	"net/http"
 	"os"
@@ -17,6 +17,10 @@ import (
 
 var config = appConfig.GetConfig()
 
+func mainPage(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "web/templates/index.html")
+}
+
 func main() {
 	ch := make(chan os.Signal)
 	signal.Notify(ch, os.Interrupt)
@@ -24,7 +28,8 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(cors.New(middlewares.GetCors()).Handler)
-	r.Mount("/todos", todo.Routes())
+	r.Get("/", mainPage)
+	r.Mount("/todos", todo_handlers.Routes())
 
 	srv := &http.Server{
 		Addr:         config.Server.Host + ":" + config.Server.Port,

@@ -1,10 +1,10 @@
-package todo
+package todo_handlers
 
 import (
 	"context"
 	"encoding/json"
 	"github.com/go-chi/chi/v5"
-	appConfig "go-todo/pkg/config"
+	appConfig "go-todo/configs"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

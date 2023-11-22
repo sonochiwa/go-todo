@@ -2,7 +2,7 @@ package middlewares
 
 import (
 	"github.com/go-chi/cors"
-	appConfig "go-todo/pkg/config"
+	appConfig "go-todo/configs"
 )
 
 var config = appConfig.GetConfig()
