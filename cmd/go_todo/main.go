@@ -40,7 +40,7 @@ func main() {
 	}
 
 	go func() {
-		log.Println("Already available on", "http://"+srv.Addr)
+		log.Println("Already available")
 		if err := srv.ListenAndServe(); err != nil {
 			log.Println(err)
 		}
